@@ -1,21 +1,16 @@
-package database
+package mysql
 
 import (
 	"database/sql"
 	"fmt"
-	"go-template/internal/config"
+	"go-template/config"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/joho/godotenv/autoload"
 )
 
-type Database struct {
-	Client *sql.DB
-}
-
-func MakeDatabase(envs *config.Envs) *Database {
-
+func New(envs *config.Environment) (*sql.DB, error) {
 	USER := envs.DATABASE_USER
 	PASSWORD := envs.DATABASE_PASSWORD
 	HOST := envs.DATABASE_HOST
@@ -27,11 +22,13 @@ func MakeDatabase(envs *config.Envs) *Database {
 		log.Fatal(err)
 	}
 
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
 	db.SetConnMaxLifetime(0)
 	db.SetMaxIdleConns(50)
 	db.SetMaxOpenConns(50)
 
-	return &Database{
-		Client: db,
-	}
+	return db, nil
 }

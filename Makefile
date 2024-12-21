@@ -1,5 +1,5 @@
 build: clean deps
-	go build -o ./bin/main ./cmd/main.go
+	go build -o ./bin/main ./cmd/api/main.go
 
 clean:
 	rm -rf ./bin
@@ -8,7 +8,7 @@ deps:
 	go mod tidy
 	
 dev:
-	go run ./cmd/main.go
+	go run ./cmd/api/main.go
 
 docker-up: docker-down
 	docker compose up
